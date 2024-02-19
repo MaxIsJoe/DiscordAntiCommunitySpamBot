@@ -40,7 +40,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if count > config.RepeatLimit {
 		trackedTimeStr := config.TrackDuration.String()
 		if count >= config.RepeatLimit+2 {
-			muteUser(s, m.Member, m.GuildID, m.Author.ID, m.ChannelID, "Spamming")
+			muteUser(s, m.GuildID, m.Author.ID, m.ChannelID, "Spamming")
 		}
 		if isNewUser(m) {
 			banUser(s, m.GuildID, m.Author.ID, "Suspicious new user is spamming the server.", m.ChannelID)
@@ -57,7 +57,7 @@ func sendWarningMessage(s *discordgo.Session, m *discordgo.MessageCreate, count 
 		modMentions += mention + " "
 	}
 
-	message := fmt.Sprintf("%s Hey %s, you've repeated this message %d times in the past %s. Please slow down a bit!",
+	message := fmt.Sprintf("%s -: Hey %s, you've repeated this message %d times in the past %s. Please slow down a bit!",
 		modMentions, m.Author.Username, count, trackedTimeStr)
 	_, err := s.ChannelMessageSend(m.ChannelID, message)
 	if err != nil {

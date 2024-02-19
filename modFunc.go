@@ -16,9 +16,9 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 	s.GuildBanCreateWithReason(guildId, userID, reason, 0)
 }
 
-func muteUser(s *discordgo.Session, member *discordgo.Member, guildID string, userID string, channelId string, reason string) error {
+func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
-	s.GuildMemberMute(guildID, member.User.ID, true)
+	s.GuildMemberMute(guildID, userID, true)
 
 	message := fmt.Sprintf("User <@%s> has been muted. Reason: %s", userID, reason)
 	_, err := s.ChannelMessageSend(channelId, message)
