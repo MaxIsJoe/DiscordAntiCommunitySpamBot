@@ -1,6 +1,6 @@
 module antiCommunitySpammer
 
-go 1.22.0
+go 1.21.6
 
 require (
 	github.com/Goscord/goscord v0.0.0-20240217180453-4db50c785a1b // indirect
