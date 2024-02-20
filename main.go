@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math/rand"
 	"os"
@@ -60,6 +61,10 @@ func main() {
 }
 
 func loadConfig(filePath string) (*Config, error) {
+	shouldLoadConfig := flag.Bool("o", false, "Load config from etc/secrets/")
+	if *shouldLoadConfig {
+		filePath = "./etc/secrets/config.ini"
+	}
 	cfg, err := ini.Load(filePath)
 	if err != nil && os.IsNotExist(err) == false {
 		return nil, errors.Wrapf(err, "failed to load config file: %s", filePath)
