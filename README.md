@@ -7,10 +7,17 @@ This bot only bans new users who just joined the server within an hour, while ol
 
 ## How to setup:
 
+### First Steps:
 1. Go into config.ini and add a token to the bot that you want to host using this.
 2. Setup things like the spam limit from the config.ini file.
-3. Build the project using `go build` (You must have Go installed)
+
+### Build Directly using Go:
+3. Build the project using `go build`
 4. Run the built Application, then let it do its job.
+
+### Build and deploy using Docker:
+3. Run `docker build -t antispambot .` to build
+4. Run `docker run -p 8080:8080 antispambot` to deploy.
 
 ## Support me
 
