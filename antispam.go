@@ -45,20 +45,13 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if isNewUser(m) {
 			banUser(s, m.GuildID, m.Author.ID, "Suspicious new user is spamming the server.", m.ChannelID)
 		} else {
-			sendWarningMessage(s, m, count, mods, trackedTimeStr)
+			sendWarningMessage(s, m, count, trackedTimeStr)
 		}
 	}
 }
 
-func sendWarningMessage(s *discordgo.Session, m *discordgo.MessageCreate, count int, mods []string, trackedTimeStr string) {
-	var modMentions string
-	for _, modID := range mods {
-		mention := fmt.Sprintf("<@&%s>", modID)
-		modMentions += mention + " "
-	}
-
-	message := fmt.Sprintf("%s -: Hey %s, you've repeated this message %d times in the past %s. Please slow down a bit!",
-		modMentions, m.Author.Username, count, trackedTimeStr)
+func sendWarningMessage(s *discordgo.Session, m *discordgo.MessageCreate, count int, trackedTimeStr string) {
+	message := fmt.Sprintf("Hey %s, you've repeated this message %d times in the past %s. Please slow down a bit!", m.Author.Username, count, trackedTimeStr)
 	_, err := s.ChannelMessageSend(m.ChannelID, message)
 	if err != nil {
 		fmt.Println("Error sending warning message:", err)

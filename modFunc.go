@@ -7,7 +7,12 @@ import (
 )
 
 func banUser(s *discordgo.Session, guildId string, userID string, reason string, channelId string) {
-	message := fmt.Sprintf("User <@%s> has been banned. Reason: %s", userID, reason)
+	var modMentions string = ""
+	for _, modID := range mods {
+		mention := fmt.Sprintf("<@&%s>", modID)
+		modMentions += mention + " "
+	}
+	message := fmt.Sprintf("%s - User <@%s> has been banned. Reason: %s", modMentions, userID, reason)
 	_, err := s.ChannelMessageSend(channelId, message)
 	if err != nil {
 		fmt.Println("Error sending ban message:", err)
