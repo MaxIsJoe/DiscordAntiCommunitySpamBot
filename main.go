@@ -17,6 +17,7 @@ type Config struct {
 	Token         string        `json:"token"`
 	TrackDuration time.Duration `json:"track_duration"`
 	RepeatLimit   int           `json:"repeat_limit"`
+	Prefix        string        `json:"prefix"`
 }
 
 const (
@@ -43,6 +44,7 @@ func main() {
 	messageCounts = *NewMessageCounts(config.TrackDuration)
 
 	dg.AddHandler(onMessageCreate)
+	dg.AddHandler(onMessageCreateWithPrefix)
 
 	err = dg.Open()
 	if err != nil {
@@ -98,6 +100,7 @@ func loadConfig(filePath string) (*Config, error) {
 	fmt.Printf(" Token: %s%s\n", config.Token[:halfLength], censoredPart)
 	fmt.Printf(" TrackDuration: %s\n", config.TrackDuration)
 	fmt.Printf(" RepeatLimit: %d\n", config.RepeatLimit)
+	fmt.Printf(" Prefix: %s\n", config.Prefix)
 
 	return &config, nil
 }
