@@ -68,6 +68,10 @@ func NewMessageCounts(duration time.Duration) *MessageCounts {
 }
 
 func trackMessage(mCounts *MessageCounts, m *discordgo.MessageCreate) {
+	if m.Content == "" {
+		fmt.Println("Detected an empty message. Skipping.. If this message appears a lot, make sure that Discord are not being total asses with the message intent permission on larger servers.")
+		return
+	}
 	mCounts.mutex.Lock()
 	defer mCounts.mutex.Unlock()
 
