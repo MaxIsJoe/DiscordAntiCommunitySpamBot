@@ -18,7 +18,11 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 		fmt.Println("Error sending ban message:", err)
 		return
 	}
-	s.GuildBanCreateWithReason(guildId, userID, reason, 0)
+	banErr := s.GuildBanCreateWithReason(guildId, userID, reason, 0)
+	if banErr != nil {
+		fmt.Println("Error banning user:", banErr)
+		return
+	}
 }
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
