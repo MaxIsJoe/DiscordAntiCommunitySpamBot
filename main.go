@@ -26,6 +26,7 @@ const (
 
 var config Config
 var statuses []string
+var botMessagesToDelete []discordgo.Message
 
 func main() {
 
@@ -122,4 +123,17 @@ func setRandomStatus(session *discordgo.Session) error {
 	randomIndex := rand.Intn(len(statuses))
 	randomStatus := statuses[randomIndex]
 	return session.UpdateGameStatus(0, randomStatus)
+}
+
+func sendMessageToGuildChannel(message string, session *discordgo.Session, channelID string, track bool) error {
+	msg, err := session.ChannelMessageSend(channelID, message)
+	if err != nil {
+		fmt.Println("Error sending message - " + err.Error())
+		return err
+	}
+	if track {
+		botMessagesToDelete = append(botMessagesToDelete, *msg)
+		fmt.Println("Added message to botMessagesToDelete - " + msg.Content + " - " + msg.Timestamp.String())
+	}
+	return nil
 }
