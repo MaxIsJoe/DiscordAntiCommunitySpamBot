@@ -27,6 +27,7 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
+	RemoveAllRoles(s, guildID, userID)
 	err := s.GuildMemberRoleAdd(guildID, userID, config.MuteRole)
 	if err != nil {
 		fmt.Println("Error muting user:", err)
@@ -41,4 +42,20 @@ func muteUser(s *discordgo.Session, guildID string, userID string, channelId str
 	}
 
 	return nil
+}
+
+func RemoveAllRoles(s *discordgo.Session, guildID string, userID string) {
+
+	member, err := s.GuildMember(guildID, userID)
+	if err != nil {
+		fmt.Println("Error getting member:", err)
+		return
+	}
+	for _, roleID := range member.Roles {
+		err = s.GuildMemberRoleRemove(guildID, userID, roleID)
+		if err != nil {
+			fmt.Println("Error removing role:", err)
+			return
+		}
+	}
 }

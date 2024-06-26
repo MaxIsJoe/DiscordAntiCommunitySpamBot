@@ -59,8 +59,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					fmt.Println("Error deleting message:", err)
 				}
 				botMessagesToDelete = botMessagesToDelete[1:]
-			} else {
-				fmt.Println("Message " + msg.ID + " still in bot message tracking. " + time.Since(msg.Timestamp).String())
 			}
 		}
 	}
