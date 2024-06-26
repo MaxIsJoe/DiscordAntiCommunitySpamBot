@@ -19,6 +19,7 @@ type Config struct {
 	RepeatLimit   int           `json:"repeat_limit"`
 	Prefix        string        `json:"prefix"`
 	MuteRole      string        `json:"prefix"`
+	RoleToRemove  string        `json:"prefix"`
 }
 
 const (
@@ -88,6 +89,10 @@ func loadConfig(filePath string) (*Config, error) {
 
 	if config.MuteRole == "" {
 		return nil, errors.New("mute role is empty")
+	}
+
+	if config.MuteRole == "" {
+		return nil, errors.New("talking perms role is empty")
 	}
 
 	for _, line := range cfg.Section("status").Keys() {

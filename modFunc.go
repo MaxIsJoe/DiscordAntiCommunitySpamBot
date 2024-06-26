@@ -27,17 +27,21 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
-	RemoveAllRoles(s, guildID, userID)
-	err := s.GuildMemberRoleAdd(guildID, userID, config.MuteRole)
+	//RemoveAllRoles(s, guildID, userID)
+	err := s.GuildMemberRoleRemove(guildID, userID, config.RoleToRemove)
 	if err != nil {
 		fmt.Println("Error muting user:", err)
 		return err
+	}
+	err = s.GuildMemberRoleAdd(guildID, userID, config.MuteRole)
+	if err != nil {
+		fmt.Println("Error while attempting to label user as muted:", err)
 	}
 
 	message := fmt.Sprintf("User <@%s> has been muted. Reason: %s", userID, reason)
 	_, err = s.ChannelMessageSend(channelId, message)
 	if err != nil {
-		fmt.Println("Error sending ban message:", err)
+		fmt.Println("Error sending mute message:", err)
 		return err
 	}
 
