@@ -12,15 +12,15 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 		mention := fmt.Sprintf("<@&%s>", modID)
 		modMentions += mention + " "
 	}
+	banErr := s.GuildBanCreateWithReason(guildId, userID, reason, 0)
+	if banErr != nil {
+		fmt.Println("Error banning user:", banErr)
+		return
+	}
 	message := fmt.Sprintf("%s - User <@%s> has been banned. Reason: %s", modMentions, userID, reason)
 	_, err := s.ChannelMessageSend(channelId, message)
 	if err != nil {
 		fmt.Println("Error sending ban message:", err)
-		return
-	}
-	banErr := s.GuildBanCreateWithReason(guildId, userID, reason, 0)
-	if banErr != nil {
-		fmt.Println("Error banning user:", banErr)
 		return
 	}
 }
