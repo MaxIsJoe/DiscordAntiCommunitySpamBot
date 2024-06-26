@@ -18,6 +18,7 @@ type Config struct {
 	TrackDuration time.Duration `json:"track_duration"`
 	RepeatLimit   int           `json:"repeat_limit"`
 	Prefix        string        `json:"prefix"`
+	MuteRole      string        `json:"prefix"`
 }
 
 const (
@@ -83,6 +84,10 @@ func loadConfig(filePath string) (*Config, error) {
 
 	if config.Token == "" {
 		return nil, errors.New("token is empty")
+	}
+
+	if config.MuteRole == "" {
+		return nil, errors.New("mute role is empty")
 	}
 
 	for _, line := range cfg.Section("status").Keys() {

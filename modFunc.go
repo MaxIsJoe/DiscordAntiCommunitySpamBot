@@ -27,7 +27,7 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
-	err := s.GuildMemberMute(guildID, userID, true)
+	err := s.GuildMemberRoleAdd(guildID, userID, config.MuteRole)
 	if err != nil {
 		fmt.Println("Error muting user:", err)
 		return err
