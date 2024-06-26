@@ -27,10 +27,14 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
-	s.GuildMemberMute(guildID, userID, true)
+	err := s.GuildMemberMute(guildID, userID, true)
+	if err != nil {
+		fmt.Println("Error muting user:", err)
+		return err
+	}
 
 	message := fmt.Sprintf("User <@%s> has been muted. Reason: %s", userID, reason)
-	_, err := s.ChannelMessageSend(channelId, message)
+	_, err = s.ChannelMessageSend(channelId, message)
 	if err != nil {
 		fmt.Println("Error sending ban message:", err)
 		return err
