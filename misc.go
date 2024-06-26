@@ -38,6 +38,10 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, args []stri
 		authorPromo(s, m)
 	case "randomstatus":
 		randomiseStatus(s)
+	case "removeallmyroles":
+		RemoveAllMyRoles(s, m)
+	case "help":
+		sendMessageToGuildChannel("For commands, check https://github.com/MaxIsJoe/DiscordAntiCommunitySpamBot/blob/main/misc.go\n For contributing to Unitystation: https://unitystation.github.io/unitystation/contribution-guides/Development-Standards-Guide/", s, m.ChannelID, false)
 	default:
 		sendMessageToGuildChannel("Unknown command: "+command, s, m.ChannelID, false)
 	}
@@ -78,4 +82,8 @@ func authorPromo(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func randomiseStatus(s *discordgo.Session) {
 	setRandomStatus(s)
+}
+
+func RemoveAllMyRoles(s *discordgo.Session, m *discordgo.MessageCreate) {
+	RemoveAllRoles(s, m.GuildID, m.Author.ID)
 }
