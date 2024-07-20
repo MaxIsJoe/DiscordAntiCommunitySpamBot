@@ -29,7 +29,12 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 
 func muteUser(s *discordgo.Session, guildID string, userID string, channelId string, reason string) error {
 
-	//RemoveAllRoles(s, guildID, userID)
+	if config.MuteRole == "" || config.RoleToRemove == "" {
+		RemoveAllRoles(s, guildID, userID)
+		fmt.Println("Roles not configured properly or at all, going with the nuclear option for safety.")
+		return nil
+	}
+
 	err := s.GuildMemberRoleRemove(guildID, userID, config.RoleToRemove)
 	if err != nil {
 		fmt.Println("Error muting user:", err)
