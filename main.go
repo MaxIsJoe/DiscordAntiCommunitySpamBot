@@ -30,6 +30,8 @@ var config Config
 var statuses []string
 var botMessagesToDelete []discordgo.Message
 
+var errorBuffer = NewErrorBuffer(8)
+
 func main() {
 
 	config, err := loadConfig(configFile)

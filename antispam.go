@@ -34,6 +34,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	count, err := checkExceedingLimit(&messageCounts, m)
 	if err != nil {
 		fmt.Println("Error checking message limit:", err)
+		errorBuffer.AddError(err.Error())
 		return
 	}
 
@@ -57,6 +58,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				err = s.ChannelMessageDelete(msg.ChannelID, msg.ID)
 				if err != nil {
 					fmt.Println("Error deleting message:", err)
+					errorBuffer.AddError(err.Error())
 				}
 				botMessagesToDelete = botMessagesToDelete[1:]
 			}
@@ -69,6 +71,7 @@ func sendWarningMessage(s *discordgo.Session, m *discordgo.MessageCreate, count 
 	err := sendMessageToGuildChannel(message, s, m.ChannelID, true)
 	if err != nil {
 		fmt.Println("Error sending warning message:", err)
+		errorBuffer.AddError(err.Error())
 		return
 	}
 }

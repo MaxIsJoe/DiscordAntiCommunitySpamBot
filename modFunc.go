@@ -15,12 +15,14 @@ func banUser(s *discordgo.Session, guildId string, userID string, reason string,
 	banErr := s.GuildBanCreateWithReason(guildId, userID, reason, 0)
 	if banErr != nil {
 		fmt.Println("Error banning user:", banErr)
+		errorBuffer.AddError(banErr.Error())
 		return
 	}
 	message := fmt.Sprintf("%s - User <@%s> has been banned. Reason: %s", modMentions, userID, reason)
 	_, err := s.ChannelMessageSend(channelId, message)
 	if err != nil {
 		fmt.Println("Error sending ban message:", err)
+		errorBuffer.AddError(err.Error())
 		return
 	}
 }
@@ -31,17 +33,20 @@ func muteUser(s *discordgo.Session, guildID string, userID string, channelId str
 	err := s.GuildMemberRoleRemove(guildID, userID, config.RoleToRemove)
 	if err != nil {
 		fmt.Println("Error muting user:", err)
+		errorBuffer.AddError(err.Error())
 		return err
 	}
 	err = s.GuildMemberRoleAdd(guildID, userID, config.MuteRole)
 	if err != nil {
 		fmt.Println("Error while attempting to label user as muted:", err)
+		errorBuffer.AddError(err.Error())
 	}
 
 	message := fmt.Sprintf("User <@%s> has been muted. Reason: %s", userID, reason)
 	_, err = s.ChannelMessageSend(channelId, message)
 	if err != nil {
 		fmt.Println("Error sending mute message:", err)
+		errorBuffer.AddError(err.Error())
 		return err
 	}
 
@@ -53,12 +58,14 @@ func RemoveAllRoles(s *discordgo.Session, guildID string, userID string) {
 	member, err := s.GuildMember(guildID, userID)
 	if err != nil {
 		fmt.Println("Error getting member:", err)
+		errorBuffer.AddError(err.Error())
 		return
 	}
 	for _, roleID := range member.Roles {
 		err = s.GuildMemberRoleRemove(guildID, userID, roleID)
 		if err != nil {
 			fmt.Println("Error removing role:", err)
+			errorBuffer.AddError(err.Error())
 			return
 		}
 	}

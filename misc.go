@@ -40,6 +40,8 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, args []stri
 		randomiseStatus(s)
 	case "removeallmyroles":
 		RemoveAllMyRoles(s, m)
+	case "errorBuffer":
+		ListAllErrorsInBuffer(s, m)
 	case "help":
 		sendMessageToGuildChannel("For commands, check https://github.com/MaxIsJoe/DiscordAntiCommunitySpamBot/blob/main/misc.go\n For contributing to Unitystation: https://unitystation.github.io/unitystation/contribution-guides/Development-Standards-Guide/", s, m.ChannelID, false)
 	default:
@@ -86,4 +88,16 @@ func randomiseStatus(s *discordgo.Session) {
 
 func RemoveAllMyRoles(s *discordgo.Session, m *discordgo.MessageCreate) {
 	RemoveAllRoles(s, m.GuildID, m.Author.ID)
+}
+
+func ListAllErrorsInBuffer(s *discordgo.Session, m *discordgo.MessageCreate) {
+	errorsDetected := errorBuffer.GetErrors()
+	errorsText := ""
+	for _, err := range errorsDetected {
+		errorsText += err.Timestamp.String() + " - " + err.Message + "\n"
+	}
+	if errorsText == "" {
+		errorsText = "No errors detected"
+	}
+	sendMessageToGuildChannel(errorsText, s, m.ChannelID, false)
 }
