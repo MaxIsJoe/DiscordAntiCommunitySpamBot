@@ -14,12 +14,13 @@ import (
 )
 
 type Config struct {
-	Token         string        `json:"token"`
-	TrackDuration time.Duration `json:"track_duration"`
-	RepeatLimit   int           `json:"repeat_limit"`
-	Prefix        string        `json:"prefix"`
-	MuteRole      string        `json:"prefix"`
-	RoleToRemove  string        `json:"prefix"`
+	Token                  string        `json:"token"`
+	TrackDuration          time.Duration `json:"track_duration"`
+	RepeatLimit            int           `json:"repeat_limit"`
+	Prefix                 string        `json:"prefix"`
+	MuteRole               string        `json:"MuteRole"`
+	RoleToRemove           string        `json:"RoleToRemove"`
+	UnitystationServerList string        `json:"UnitystationServerList"`
 }
 
 const (
@@ -95,6 +96,10 @@ func loadConfig(filePath string) (*Config, error) {
 
 	if config.MuteRole == "" {
 		return nil, errors.New("talking perms role is empty")
+	}
+
+	if config.UnitystationServerList == "" {
+		fmt.Println("Server list missing. This is required for one of the commands to work.")
 	}
 
 	for _, line := range cfg.Section("status").Keys() {

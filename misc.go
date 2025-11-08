@@ -1,6 +1,7 @@
 package main
 
 import (
+	"antiCommunitySpammer/commands"
 	"fmt"
 	"strings"
 	"time"
@@ -44,6 +45,8 @@ func handleCommand(s *discordgo.Session, m *discordgo.MessageCreate, args []stri
 		ListAllErrorsInBuffer(s, m)
 	case "help":
 		sendMessageToGuildChannel("For commands, check https://github.com/MaxIsJoe/DiscordAntiCommunitySpamBot/blob/main/misc.go\n For contributing to Unitystation: https://unitystation.github.io/unitystation/contribution-guides/Development-Standards-Guide/", s, m.ChannelID, false)
+	case "servers":
+		commands.HandleServersCommand(s, m, config.UnitystationServerList)
 	default:
 		sendMessageToGuildChannel("Unknown command: "+command, s, m.ChannelID, false)
 	}
