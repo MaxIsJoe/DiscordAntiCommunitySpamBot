@@ -153,5 +153,4 @@ func sendMessageToGuildChannel(message string, session *discordgo.Session, chann
 		fmt.Println("Added message to botMessagesToDelete - " + msg.Content + " - " + msg.Timestamp.String())
 	}
 	return nil
-
 }
