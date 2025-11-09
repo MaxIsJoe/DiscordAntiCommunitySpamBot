@@ -1,8 +1,10 @@
-package main
+package utils
 
 import (
 	"time"
 )
+
+var Errors = NewErrorBuffer(8)
 
 type ErrorEntry struct {
 	Message   string

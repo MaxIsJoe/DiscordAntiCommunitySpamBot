@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"antiCommunitySpammer/config"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -33,6 +34,10 @@ type ServerInfo struct {
 	GoodFileVersion string `json:"GoodFileVersion"`
 }
 
+func init() {
+	RegisterCommand("servers", HandleServersCommand)
+}
+
 // fetchUnityServers contacts the UnityStation API and returns a list of servers.
 func fetchUnityServers(serverListUrl string) ([]ServerInfo, error) {
 	url := serverListUrl
@@ -56,8 +61,8 @@ func fetchUnityServers(serverListUrl string) ([]ServerInfo, error) {
 	return list.Servers, nil
 }
 
-func HandleServersCommand(s *discordgo.Session, m *discordgo.MessageCreate, serverListUrl string) {
-	servers, err := fetchUnityServers(serverListUrl)
+func HandleServersCommand(m *discordgo.MessageCreate, s *discordgo.Session, args []string) {
+	servers, err := fetchUnityServers(config.BotConfig.UnitystationServerList)
 	if err != nil {
 		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("⚠️ Failed to fetch servers: %v", err))
 		return
