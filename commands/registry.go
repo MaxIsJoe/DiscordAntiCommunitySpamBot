@@ -2,7 +2,6 @@ package commands
 
 import (
 	"antiCommunitySpammer/config"
-	"antiCommunitySpammer/discord"
 	"fmt"
 	"sort"
 	"strings"
@@ -27,7 +26,7 @@ func OnMessageCreateWithPrefix(s *discordgo.Session, m *discordgo.MessageCreate)
 	if m.Author.Bot || prefix == "" {
 		return
 	}
-	if !strings.HasPrefix(m.Content, prefix) {
+	if strings.HasPrefix(m.Content, prefix) == false {
 		return
 	}
 
@@ -45,7 +44,6 @@ func handleCommand(session *discordgo.Session, message *discordgo.MessageCreate,
 
 	handler, exists := Registry[cmdName]
 	if !exists {
-		discord.SendMessageToGuildChannel("❌ Unknown command: "+cmdName, session, message.ChannelID, false)
 		return
 	}
 	handler(message, session, args[1:])
