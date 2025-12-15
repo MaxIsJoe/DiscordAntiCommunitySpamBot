@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	RegisterCommand("servers", measureTime)
+	RegisterCommand("ping", measureTime)
 	RegisterCommand("security", securityReminder)
 	RegisterCommand("checkCounts", checkCounts)
 	RegisterCommand("checkBotCounts", botCheckCounts)

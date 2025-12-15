@@ -26,6 +26,15 @@ type MessageCounts struct {
 var TrackedMessages MessageCounts
 var BotMessagesToDelete []discordgo.Message
 
+func init() {
+	TrackedMessages = MessageCounts{
+		mutex:    sync.Mutex{},
+		Data:     make(map[string]*messageTracker),
+		Duration: config.BotConfig.TrackDuration,
+	}
+	BotMessagesToDelete = []discordgo.Message{}
+}
+
 func OnMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.Bot {
 		return
