@@ -19,6 +19,8 @@ type Config struct {
 	MuteRole               string        `json:"MuteRole"`
 	RoleToRemove           string        `json:"RoleToRemove"`
 	UnitystationServerList string        `json:"UnitystationServerList"`
+	TomatoReactionLimit    int           `json:"tomato_reaction_limit"`
+	TomatoTimeoutDuration  time.Duration `json:"tomato_timeout_duration"`
 }
 
 const (
@@ -61,6 +63,24 @@ func LoadConfig(filePath string) (*Config, error) {
 		fmt.Println("Server list missing. This is required for one of the commands to work.")
 	}
 
+	if BotConfig.TrackDuration <= 0 {
+		return nil, errors.New("track duration must be greater than 0")
+	}
+
+	if BotConfig.RepeatLimit <= 0 {
+		return nil, errors.New("repeat limit must be greater than 0")
+	}
+
+	if BotConfig.TomatoReactionLimit <= 0 {
+		BotConfig.TomatoReactionLimit = 6
+		fmt.Printf("Invalid tomato reaction limit, defaulting to %d\n", BotConfig.TomatoReactionLimit)
+	}
+
+	if BotConfig.TomatoTimeoutDuration <= 0 {
+		BotConfig.TomatoTimeoutDuration = time.Minute * 4
+		fmt.Printf("Invalid tomato timeout duration, defaulting to %s\n", BotConfig.TomatoTimeoutDuration)
+	}
+
 	LoadStatuesFromKeys(cfg.Section("status").Keys())
 	LoadModsFromIniKeys(cfg.Section("moderators").Keys())
 
@@ -69,13 +89,15 @@ func LoadConfig(filePath string) (*Config, error) {
 	fmt.Printf(" TrackDuration: %s\n", BotConfig.TrackDuration)
 	fmt.Printf(" RepeatLimit: %d\n", BotConfig.RepeatLimit)
 	fmt.Printf(" Prefix: %s\n", BotConfig.Prefix)
+	fmt.Printf(" TomatoReactionLimit: %d\n", BotConfig.TomatoReactionLimit)
+	fmt.Printf(" TomatoTimeoutDuration: %s\n", BotConfig.TomatoTimeoutDuration)
 
 	return &BotConfig, nil
 }
 
 func CreateDefaultConfig(filePath string) (*Config, error) {
 	cfg := ini.Empty()
-	err := cfg.Append([]byte(fmt.Sprintf("[bot]\nToken=\nTrackDuration=%dm\nRepeatLimit=4\n", 2*time.Minute)))
+	err := cfg.Append([]byte(fmt.Sprintf("[bot]\nToken=\nTrackDuration=%dm\nRepeatLimit=4\nTomatoReactionLimit=6\nTomatoTimeoutDuration=10m\n", 2*time.Minute)))
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create default config file: %s", filePath)
 	}

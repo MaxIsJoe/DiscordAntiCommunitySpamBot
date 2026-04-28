@@ -42,6 +42,8 @@ func main() {
 
 	dg.AddHandler(discord.OnMessageCreate)
 	dg.AddHandler(commands.OnMessageCreateWithPrefix)
+	dg.AddHandler(discord.OnReactionAdd)
+	dg.AddHandler(discord.OnReactionRemove)
 
 	err = dg.Open()
 	if err != nil {
