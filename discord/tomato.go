@@ -96,7 +96,7 @@ func (t *TomatoTracker) addMessage(messageID string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
-	// If message already tracked, don't add it again
+	// If message already tracked, don't add it again.
 	for _, id := range t.messageHistory {
 		if id == messageID {
 			return
