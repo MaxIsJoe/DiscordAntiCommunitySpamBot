@@ -20,6 +20,7 @@ func init() {
 	RegisterCommand("removeAllMyRoles", RemoveAllMyRoles)
 	RegisterCommand("listAllErrorsInBuffer", ListAllErrorsInBuffer)
 	RegisterCommand("author", authorPromo)
+	RegisterCommand("tomato", toggleTomato)
 }
 
 func measureTime(m *discordgo.MessageCreate, s *discordgo.Session, args []string) {
@@ -73,4 +74,80 @@ func ListAllErrorsInBuffer(m *discordgo.MessageCreate, s *discordgo.Session, arg
 		errorsText = "No errors detected"
 	}
 	discord.SendMessageToGuildChannel(errorsText, s, m.ChannelID, false)
+}
+
+func toggleTomato(m *discordgo.MessageCreate, s *discordgo.Session, args []string) {
+	if m.GuildID == "" {
+		s.ChannelMessageSend(m.ChannelID, "This command can only be used in a server.")
+		return
+	}
+	if len(args) != 1 || (strings.ToLower(args[0]) != "enable" && strings.ToLower(args[0]) != "disable") {
+		s.ChannelMessageSend(m.ChannelID, "Usage: tomato <enable|disable>")
+		return
+	}
+	if s.State == nil {
+		s.ChannelMessageSend(m.ChannelID, "Unable to verify your server state right now.")
+		return
+	}
+
+	permissions, err := userChannelPermissions(s, m.GuildID, m.Author.ID, m.ChannelID)
+	if err != nil {
+		utils.Errors.AddError(err.Error())
+		s.ChannelMessageSend(m.ChannelID, "Unable to verify your server permissions right now.\n error: "+err.Error())
+		return
+	}
+	moderatorPermissions := int64(
+		discordgo.PermissionAdministrator |
+			discordgo.PermissionModerateMembers |
+			discordgo.PermissionVoiceMuteMembers |
+			discordgo.PermissionKickMembers |
+			discordgo.PermissionBanMembers,
+	)
+	if permissions&moderatorPermissions == 0 {
+		s.ChannelMessageSend(m.ChannelID, "You need Mute Members, Kick Members, or Ban Members permission to use this command.")
+		return
+	}
+
+	enabled := strings.ToLower(args[0]) == "enable"
+	discord.SetTomatoEnabled(m.GuildID, enabled)
+	if enabled {
+		s.ChannelMessageSend(m.ChannelID, "Tomato timeout voting is now enabled for this server.")
+		return
+	}
+	s.ChannelMessageSend(m.ChannelID, "Tomato timeout voting is now disabled for this server.")
+}
+
+func userChannelPermissions(s *discordgo.Session, guildID, userID, channelID string) (int64, error) {
+	if s.State == nil {
+		return 0, fmt.Errorf("discord state is not initialized")
+	}
+	if permissions, err := s.State.UserChannelPermissions(userID, channelID); err == nil {
+		return permissions, nil
+	}
+
+	channel, err := s.Channel(channelID)
+	if err != nil {
+		return 0, fmt.Errorf("fetch channel for permission check: %w", err)
+	}
+	guild, err := s.Guild(guildID)
+	if err != nil {
+		return 0, fmt.Errorf("fetch guild for permission check: %w", err)
+	}
+	member, err := s.GuildMember(guildID, userID)
+	if err != nil {
+		return 0, fmt.Errorf("fetch member for permission check: %w", err)
+	}
+
+	member.GuildID = guildID
+	if err := s.State.GuildAdd(guild); err != nil {
+		return 0, fmt.Errorf("cache guild for permission check: %w", err)
+	}
+	if err := s.State.ChannelAdd(channel); err != nil {
+		return 0, fmt.Errorf("cache channel for permission check: %w", err)
+	}
+	if err := s.State.MemberAdd(member); err != nil {
+		return 0, fmt.Errorf("cache member for permission check: %w", err)
+	}
+
+	return s.State.UserChannelPermissions(userID, channelID)
 }

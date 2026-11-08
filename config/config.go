@@ -23,10 +23,6 @@ type Config struct {
 	TomatoTimeoutDuration  time.Duration `json:"tomato_timeout_duration"`
 }
 
-const (
-	configFile = "config.ini"
-)
-
 var BotConfig Config
 
 func LoadConfig(filePath string) (*Config, error) {
@@ -97,7 +93,7 @@ func LoadConfig(filePath string) (*Config, error) {
 
 func CreateDefaultConfig(filePath string) (*Config, error) {
 	cfg := ini.Empty()
-	err := cfg.Append([]byte(fmt.Sprintf("[bot]\nToken=\nTrackDuration=%dm\nRepeatLimit=4\nTomatoReactionLimit=6\nTomatoTimeoutDuration=10m\n", 2*time.Minute)))
+	err := cfg.Append(fmt.Appendf(nil, "[bot]\nToken=\nTrackDuration=%dm\nRepeatLimit=4\nTomatoReactionLimit=6\nTomatoTimeoutDuration=10m\n", 2*time.Minute))
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create default config file: %s", filePath)
 	}
